@@ -26,7 +26,7 @@
 * 사용자가 데이터를 조회하거나 추출하는 작업을 수행한다. (데이터 추출(Retrieval))
 * 데이터베이스의 사용자를 생성하고, 모니터링하며 접근을 제어하는 작업을 수행한다. (데이터 제어(Control))
 #### 2.1. DBMS 종류와 특징
-||Access|SQL Serve|Oracle|MySQL|MariaDB|SQLite|
+||Access|SQL Server|Oracle|MySQL|MariaDB|SQLite|
 |:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |제조사|MS|MS|Oracle|Oracle|MariaDB 재단|리처드 힙(오픈소스)|
 |운영체제|윈도우즈|윈도우즈|윈도우즈, 유닉스, 리눅스|윈도우즈, 유닉스, 리눅스|윈도우즈, 유닉스, 리눅스|안드로이드, IOS 등|
