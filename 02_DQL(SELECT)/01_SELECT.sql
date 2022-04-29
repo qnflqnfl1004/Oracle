@@ -307,9 +307,93 @@ FROM EMPLOYEE
 WHERE DEPT_CODE IN ('D5', 'D6', 'D8')
 ORDER BY DEPT_CODE;
   
+/*
+    <LIKE>
+        WHERE 컬럼 LIKE '특정 패턴'
+        
+        컬럼 값이 지정된 특정 패턴을 만족할 경우 검색 대상이 된다.
+        특정 패턴에는 '%', '_'를 와일드카드로 사용할 수 있다.
+        '%' : 0 글자 이상
+            ex) 컬럼 LIKE '문자%'  -> 컬럼 값 중에 '문자'로 시작하는 모든 행을 조회한다.
+                컬럼 LIKE '%문자'  -> 컬럼 값 중에 '문자'로 끝나는 모든 행을 조회한다.
+                컬럼 LIKE '%문자%' -> 컬럼 값 중에 '문자'가 포함되어 있는 모든 행을 조회한다.
+        '_' : 1 글자
+            ex) 컬럼 LIKE '_문자'  -> 컬럼 값 중에 '문자'앞에 무조건 한 글자가 오는 모든 행을 조회한다.
+                컬럼 LIKE '__문자' -> 컬럼 값 중에 '문자'앞에 무조건 두 글자가 오는 모든 행을 조회한다.
+*/
+
+-- EMPLOYEE 테이블에서 성이 전 씨인 사원의 직원명, 급여, 입사일 조회
+SELECT EMP_NAME, SALARY, HIRE_DATE
+FROM EMPLOYEE
+WHERE EMP_NAME LIKE '전%';
+
+-- EMPLOYEE 테이블에서 이름 중에 '하'가 포함된 사원의 직원명, 주민번호, 부서 코드 조회
+SELECT EMP_NAME, EMP_NO, DEPT_CODE
+FROM EMPLOYEE
+WHERE EMP_NAME LIKE '%하%';
+
+-- EMPLOYEE 테이블에서 김씨 성이 아닌 직원의 사번, 직원명, 입사일 조회
+SELECT EMP_ID, EMP_NAME, HIRE_DATE
+FROM EMPLOYEE
+--WHERE NOT EMP_NAME LIKE '김%';
+--WHERE EMP_NAME NOT LIKE '김%';
+WHERE NOT EMP_NAME NOT LIKE '김%';
+
+-- EMPLOYEE 테이블에서 전화번호 4번째 자리가 9로 시작하는 직원의 사번, 직원명, 전화번호, 이메일 조회
+SELECT EMP_ID, EMP_NAME, PHONE, EMAIL
+FROM EMPLOYEE
+WHERE PHONE LIKE '___9%';
   
-  
-  
-  
-  
-  
+-- EMPLOYEE 테이블에서 이메일 중 _ 앞 글자가 3자리인 이메일 주소를 가진 직원의 사번, 직원명, 이메일 조회
+-- ex) sun_di@kh.or.kr, yoo_js@kh.or.kr, ...
+SELECT EMP_ID, EMP_NAME, EMAIL
+FROM EMPLOYEE
+--WHERE EMAIL LIKE '____%'; -- 와일드 카드와 데이터 값이 구분이 되지 않는다.
+WHERE EMAIL LIKE '___$_%' ESCAPE '$';
+
+/*  
+    <IS NULL>
+        WHERE 컬럼 IS NULL
+        
+        컬럼 값이 NULL인 경우 검색 대상이 된다.
+*/
+
+-- EMPLOYEE 테이블에서 보너스를 받지 않는 사원의 사번, 직원명, 급여 조회
+SELECT EMP_ID, EMP_NAME, SALARY
+FROM EMPLOYEE
+--WHERE BONUS = NULL; -- NULL은 비교 연산자로 비교할 수 없다.
+WHERE BONUS IS NULL;  
+
+-- EMPLOYEE 테이블에서 관리자(사수)가 없는 사원이 이름, 부서 코드 조회
+SELECT EMP_NAME, DEPT_CODE
+FROM EMPLOYEE
+WHERE MANAGER_ID IS NULL;
+
+-- EMPLOYEE 테이블에서 관리자도 없고 부서도 배치 받지 않은 사원의 이름, 부서코드 조회
+SELECT EMP_NAME, DEPT_CODE
+FROM EMPLOYEE
+WHERE MANAGER_ID IS NULL AND DEPT_CODE IS NULL;
+
+-- EMPLOYEE 테이블에서 부서 배치를 받진 않았지만 보너스는 받는 사원의 직원명, 부서 코드, 보너스 조회
+SELECT EMP_NAME, DEPT_CODE, BONUS
+FROM EMPLOYEE
+WHERE DEPT_CODE IS NULL AND BONUS IS NOT NULL;
+
+/*
+    연산자 우선순위
+*/
+
+-- EMPLOYEE 테이블에서 직급 코드가 J2 또는 J7 직급인 사원들 중 급여가 200만원 이상인 사원들의 모든 컬럼을 조회
+SELECT *
+FROM EMPLOYEE
+--WHERE JOB_CODE = 'J7' OR JOB_CODE = 'J2' AND SALARY >= 2000000;
+--WHERE (JOB_CODE = 'J7' OR JOB_CODE = 'J2') AND SALARY >= 2000000;
+WHERE JOB_CODE IN ('J7', 'J2') AND SALARY >= 2000000;
+
+SELECT *
+FROM EMPLOYEE
+WHERE JOB_CODE = 'J2' AND SALARY >= 2000000;
+
+SELECT *
+FROM EMPLOYEE
+WHERE JOB_CODE = 'J7';
