@@ -1,5 +1,5 @@
 /*
-    <문자 관련 함수>
+    <문자 처리 함수>
     
     1) LENGTH / LENGTHB
         LENGTH('문자값') : 글자 수 반환
@@ -66,6 +66,7 @@ FROM DUAL;
 SELECT LTRIM('   KH') FROM DUAL;
 SELECT LTRIM('000123456', '0') FROM DUAL;
 SELECT LTRIM('123123KH', '123') FROM DUAL;
+SELECT LTRIM('123123KH', '213') FROM DUAL;
 SELECT LTRIM('123123KH123', '123') FROM DUAL;
 
 SELECT RTRIM('KH   ') FROM DUAL;
@@ -182,6 +183,433 @@ SELECT EMP_NAME,
        EMAIL,
        REPLACE(EMAIL, 'kh.or.kr', 'gmail.com')
 FROM EMPLOYEE;
+
+/*
+    <숫자 처리 함수>
+    
+    1) ABS
+        ABS(NUMBER)
+*/
+SELECT ABS(10.9)FROM DUAL;
+SELECT ABS(-10.9)FROM DUAL;
+
+/*
+    2) MOD
+        MOD(NUMBER, NUMBER)
+*/
+-- SELECT 10 % 3 FROM DUAL;
+SELECT MOD(10, 3) FROM DUAL;
+SELECT MOD(-10, 3) FROM DUAL;
+SELECT MOD(10, -3) FROM DUAL;
+SELECT MOD(10.9, 3) FROM DUAL;
+
+/*
+    3) ROUND
+        ROUND(NUMBER[, POSITION])
+        
+        POSITION : 기본적으로 0, 양수(소수점 기준으로 오른쪽)와 음수(소수점 기준으로 왼쪽)로 입력 가능
+*/
+SELECT ROUND(123.456) FROM DUAL;
+SELECT ROUND(123.456, 0) FROM DUAL;
+SELECT ROUND(-10.65) FROM DUAL;
+SELECT ROUND(-10.65, 0) FROM DUAL;
+SELECT ROUND(123.456, 1) FROM DUAL;
+SELECT ROUND(123.456, 2) FROM DUAL;
+SELECT ROUND(123.456, 4) FROM DUAL;
+SELECT ROUND(123.456, -1) FROM DUAL;
+SELECT ROUND(123.456, -2) FROM DUAL;
+SELECT ROUND(123.456, -3) FROM DUAL;
+SELECT ROUND(723.456, -3) FROM DUAL;
+
+/*
+    4) CEIL
+        CEIL(NUMBER)
+*/
+SELECT CEIL(123.456) FROM DUAL;
+-- SELECT CEIL(123.456, 2) FROM DUAL;
+
+/*
+    5) FLOOR
+        FLOOR(NUMBER)
+*/
+SELECT FLOOR(123.456) FROM DUAL;
+SELECT FLOOR(456.789) FROM DUAL;
+
+/*
+    6) TRUNC
+        TRUNC(NUMBER[, POSITION])
+*/
+SELECT TRUNC(123.456) FROM DUAL;
+SELECT TRUNC(456.789) FROM DUAL;
+SELECT TRUNC(456.789, 0) FROM DUAL;
+SELECT TRUNC(456.789, 1) FROM DUAL; -- 456.7
+SELECT TRUNC(456.789, -1) FROM DUAL;
+
+/*
+    <날짜 처리 함수>
+    
+    1) SYSDATE
+*/
+SELECT SYSDATE FROM DUAL;
+
+-- 날짜 포맷 변경
+ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH:MI:SS';
+ALTER SESSION SET NLS_DATE_FORMAT = 'RR/MM/DD';
+
+/*
+    2) MONTHS_BETWEEN(DATE, DATE)
+*/
+SELECT FLOOR(MONTHS_BETWEEN(SYSDATE, '20210525')) FROM DUAL;
+
+-- EMPLOYEE 테이블에서 직원명, 입사일, 근무개월수 조회
+SELECT EMP_NAME AS "직원명", 
+       HIRE_DATE AS "입사일",
+       FLOOR(MONTHS_BETWEEN(SYSDATE, HIRE_DATE)) AS "근무개월수"
+FROM EMPLOYEE;
+
+/*
+    3) ADD_MONTHS
+        ADD_MONTHS(DATE, NUMBER)
+*/
+SELECT ADD_MONTHS(SYSDATE, 12) FROM DUAL;
+
+-- EMPLOYEE 테이블에서 직원명, 입사일, 입사 후 6개월이 된 날짜를 조회
+SELECT EMP_NAME AS "직원명", 
+       HIRE_DATE AS "입사일",
+       ADD_MONTHS(HIRE_DATE, 6) AS "입사일 + 6개월"
+FROM EMPLOYEE;
+
+/*
+    4) NEXT_DAY
+        NEXT_DATE(DATE, 요일(문자, 숫자))
+*/
+-- 현재 날짜에서 제일 가까운 일요일 조회
+SELECT SYSDATE, NEXT_DAY(SYSDATE, '일요일') FROM DUAL;
+SELECT SYSDATE, NEXT_DAY(SYSDATE, '일') FROM DUAL;
+SELECT SYSDATE, NEXT_DAY(SYSDATE, 1) FROM DUAL;  -- 1: 일요일, 2: 월요일, ..., 7: 토요일
+SELECT SYSDATE, NEXT_DAY(SYSDATE, 'SUNDAY') FROM DUAL; -- 에러 발생 (현재 언어가 KOREAN이기 때문에)
+SELECT SYSDATE, NEXT_DAY(SYSDATE, 'SUN') FROM DUAL; -- 에러 발생
+
+-- 언어 변경
+ALTER SESSION SET NLS_LANGUAGE = AMERICAN;
+
+SELECT SYSDATE, NEXT_DAY(SYSDATE, 'MONDAY') FROM DUAL;
+SELECT SYSDATE, NEXT_DAY(SYSDATE, 'MON') FROM DUAL;
+SELECT SYSDATE, NEXT_DAY(SYSDATE, 2) FROM DUAL;
+SELECT SYSDATE, NEXT_DAY(SYSDATE, '월요일') FROM DUAL;
+SELECT SYSDATE, NEXT_DAY(SYSDATE, '월') FROM DUAL;
+
+ALTER SESSION SET NLS_LANGUAGE = KOREAN;
+
+/*
+    5) LAST_DAY
+        LAST_DAY(DATE)
+*/
+SELECT LAST_DAY(SYSDATE) FROM DUAL;
+SELECT LAST_DAY('20/02/10') FROM DUAL;
+
+-- EMPLOYEE 테이블에서 직원명, 입사일, 입사월의 마지막 날짜 조회
+SELECT EMP_NAME, 
+       HIRE_DATE,
+       LAST_DAY(HIRE_DATE)
+FROM EMPLOYEE;       
+
+/*
+    6) EXTRACT(YEAR|MONTH|DAY FROM DATE)
+*/
+-- EMPLOYEE 테이블에서 직원명, 입사년도, 입사월, 입사일 조회
+SELECT EMP_NAME AS "직원명",
+--       HIRE_DATE,
+       EXTRACT(YEAR FROM HIRE_DATE) AS "입사년도",
+       EXTRACT(MONTH FROM HIRE_DATE) AS "입사월",
+       EXTRACT(DAY FROM HIRE_DATE) AS "입사일"
+FROM EMPLOYEE
+--ORDER BY EXTRACT(YEAR FROM HIRE_DATE);
+--ORDER BY "입사년도" DESC, "입사월";
+ORDER BY 2, 3, 4;
+
+/*
+    <형 변환 함수>
+    
+    1) TO_CHAR(날짜|숫자[, 포멧])
+*/
+
+-- 숫자 -> 문자
+SELECT TO_CHAR(1234) FROM DUAL;
+SELECT TO_CHAR(1234, '999999') FROM DUAL; -- 6칸의 공간을 확보, 오른쪽 정렬, 빈칸은 공백으로 채운다.
+SELECT TO_CHAR(1234, '000000') FROM DUAL; -- 6칸의 공간을 확보, 오른쪽 정렬, 빈칸은 0으로 채운다.
+SELECT TO_CHAR(1234, 'L999999') FROM DUAL; -- 현재 설정된 나라의 화폐 단위
+SELECT TO_CHAR(1234, 'L999,999') FROM DUAL; -- 자리수 구분
+
+-- EMPLOYEE 테이블에서 직원명, 급여 조회
+SELECT EMP_NAME,
+       TO_CHAR(SALARY, 'L99,999,999')
+FROM EMPLOYEE;
+
+-- 날짜 -> 문자
+SELECT SYSDATE FROM DUAL;
+SELECT TO_CHAR(SYSDATE) FROM DUAL;
+SELECT TO_CHAR(SYSDATE, 'AM HH24:MI:SS') FROM DUAL;
+SELECT TO_CHAR(SYSDATE, 'DAY') FROM DUAL;
+SELECT TO_CHAR(SYSDATE, 'DY') FROM DUAL;
+SELECT TO_CHAR(SYSDATE, 'MONTH') FROM DUAL;
+SELECT TO_CHAR(SYSDATE, 'MON') FROM DUAL;
+SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD(DY)') FROM DUAL;
+
+-- EMPLOYEE 테이블에서 직원명, 입사일(2022-05-02)
+SELECT EMP_NAME, 
+       TO_CHAR(HIRE_DATE, 'YYYY"년"MM"월"DD"일"')
+FROM EMPLOYEE;
+
+-- 날짜 포맷 변경
+ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH:MI:SS';
+ALTER SESSION SET NLS_DATE_FORMAT = 'RR/MM/DD';
+
+-- 연도 포맷 문자
+SELECT TO_CHAR(SYSDATE, 'YYYY'), 
+       TO_CHAR(SYSDATE, 'RRRR'),
+       TO_CHAR(SYSDATE, 'YY'),
+       TO_CHAR(SYSDATE, 'RR'),
+       TO_CHAR(SYSDATE, 'YEAR')
+FROM DUAL;
+
+-- 월에 대한 포맷
+SELECT HIRE_DATE, 
+       TO_CHAR(HIRE_DATE, 'MM'),
+       TO_CHAR(HIRE_DATE, 'MON'),
+       TO_CHAR(HIRE_DATE, 'MONTH'),
+       TO_CHAR(HIRE_DATE, 'RM') -- 로마 기호
+FROM EMPLOYEE;
+
+-- 일에 대한 포맷
+SELECT HIRE_DATE, 
+       TO_CHAR(HIRE_DATE, 'DY'),
+       TO_CHAR(HIRE_DATE, 'D'), -- 1주를 기준으로 며칠째
+       TO_CHAR(HIRE_DATE, 'DD'), -- 1달을 기준으로 며칠째
+       TO_CHAR(HIRE_DATE, 'DDD') -- 1년을 기준으로 며칠째
+FROM EMPLOYEE;
+
+-- 요일에 대한 포맷
+SELECT HIRE_DATE, 
+       TO_CHAR(HIRE_DATE, 'DAY'),
+       TO_CHAR(HIRE_DATE, 'DY')
+FROM EMPLOYEE;
+
+-- EMPLOYEE 테이블에서 직원명, 입사일(2022-05-02(화)) 조회
+SELECT EMP_NAME,
+       TO_CHAR(HIRE_DATE, 'YYYY-MM-DD(DY)')
+FROM EMPLOYEE;       
+
+-- EMPLOYEE 테이블에서 직원명, 입사일(2022년 05월 02일(화요일)) 조회
+SELECT EMP_NAME,
+       TO_CHAR(HIRE_DATE, 'YYYY"년" MM"월" DD"일"(DAY)')
+FROM EMPLOYEE;   
+
+/*
+    2) TO_DATE
+        TO_DATE(숫자|문자[, 포멧])
+*/
+
+-- 숫자 -> 날짜
+SELECT TO_DATE(20201212) FROM DUAL;
+SELECT TO_DATE(20201212122530) FROM DUAL;
+
+-- 문자 -> 날짜
+SELECT TO_DATE('20201212') FROM DUAL;
+SELECT TO_DATE('20201212 122530') FROM DUAL;
+SELECT TO_DATE('20201212 222530', 'YYYYMMDD HH24MISS') FROM DUAL;
+
+-- YY와 RR 비교
+-- YY는 무조건 현재 세기를 반영하고, RR는 50 미만이면 현재 세기를 반영, 50 이상이면 이전 세기를 반영한다.
+SELECT TO_DATE('220502', 'YYMMDD') FROM DUAL;
+SELECT TO_DATE('980502', 'YYMMDD') FROM DUAL;
+
+SELECT TO_DATE('220502', 'RRMMDD') FROM DUAL;
+SELECT TO_DATE('980502', 'RRMMDD') FROM DUAL;
+
+-- EMPLOYEE 테이블에서 1998년 1월 1일 이후에 입사한 사원의 사번, 직원명, 입사일 조회
+SELECT EMP_ID, EMP_NAME, HIRE_DATE
+FROM EMPLOYEE
+--WHERE HIRE_DATE > TO_DATE('980101', 'RRMMDD')
+--WHERE HIRE_DATE > TO_DATE('19980101', 'YYYYMMDD')
+--WHERE HIRE_DATE > TO_DATE('19980101', 'RRRRMMDD')
+WHERE HIRE_DATE > '19980101'
+ORDER BY HIRE_DATE;
+
+/*
+    3) TO_NUMBER
+        TO_NUMBER('문자값'[, 포맷])
+*/
+SELECT TO_NUMBER('012345678') FROM DUAL;
+
+SELECT '123' + '456' FROM DUAL; -- 자동으로 숫자 타입으로 형 변환 뒤 연산처리를 한다.
+SELECT '123' + '456A' FROM DUAL; -- 에러 발생
+SELECT '10,000,000' + '500,000' FROM DUAL; -- 에러 발생
+
+SELECT TO_NUMBER('10,000,000', '999,999,999') FROM DUAL;
+SELECT TO_NUMBER('500,000', '9,999,999') FROM DUAL;
+
+SELECT TO_NUMBER('10,000,000', '999,999,999') + TO_NUMBER('500,000', '9,999,999') 
+FROM DUAL;
+
+SELECT *
+FROM EMPLOYEE
+WHERE EMP_ID >= 210;
+
+-- 날짜 포맷 변경
+ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH:MI:SS';
+ALTER SESSION SET NLS_DATE_FORMAT = 'RR/MM/DD';
+
+/*
+    <NULL 처리 함수>
+    
+    1) NVL  
+        NVL(값1, 값2)
+        
+        - 값1이 NULL이 아니면 값1을 반환하고 값1이 NULL이면 값2를 반환한다.
+    
+    2) NVL2
+        NVL2(값1, 값2, 값3)
+        
+        - 값1이 NULL이 아니면 값2를 반환하고 값1이 NULL이면 값3을 반환한다.
+    
+    3) NULLIF
+        NULLIF(값1, 값2)
+        
+        - 두 개의 값이 동일하면 NULL을 반환하고, 두 개의 값이 동일하지 않으면 값1을 반환한다.
+*/
+
+-- EMPLOYEE 테이블에서 직원명, 보너스, 보너스가 포함된 연봉 조회
+SELECT EMP_NAME, 
+       NVL(BONUS, 0), 
+       (SALARY + (SALARY * NVL(BONUS, 0))) * 12
+FROM EMPLOYEE;
+
+-- EMPLOYEE 테이블에 직원명, 부서 코드를 조회
+SELECT EMP_NAME, NVL(DEPT_CODE, '부서없음')
+FROM EMPLOYEE
+ORDER BY DEPT_CODE DESC;
+
+-- EMPLOYEE 테이블에서 보너스를 0.1로 동결하여 직원명, 보너스율, 동결된 보너스율, 보너스가 포함된 연봉 조회
+SELECT EMP_NAME AS "직원명",
+       NVL(BONUS, 0) AS "보너스율",
+       NVL2(BONUS, 0.1, 0) AS "동결된 보너스율",
+       (SALARY + (SALARY * NVL2(BONUS, 0.1, 0))) * 12 AS "연봉"
+FROM EMPLOYEE;
+
+SELECT NULLIF('123', '123') FROM DUAL;
+SELECT NULLIF('123', '456') FROM DUAL;
+
+SELECT NULLIF(123, 123) FROM DUAL;
+SELECT NULLIF(123, 456) FROM DUAL;
+
+/*
+    <선택함수>
+    
+    1) DECODE
+        DECODE(값, 조건 1, 결과값 1, 조건 2, 결과값 2, ..., 결과값 N)
+*/
+
+-- EMPLOYEE 테이블에서 사번, 직원명, 주민번호, 성별(남자, 여자) 조회
+SELECT EMP_ID AS "사번", 
+       EMP_NAME AS "직원명", 
+       EMP_NO AS "주민번호",
+--       SUBSTR(EMP_NO, 8, 1)
+       DECODE(SUBSTR(EMP_NO, 8, 1), 1, '남자', 2, '여자', '잘못된 주민번호입니다.') AS "성별"
+FROM EMPLOYEE;
+
+-- EMPLOYEE 테이블에서 직원명, 직급 코드, 기존 급여, 인상된 급여를 조회
+-- 직급 코드가 J7인 직원은 급여를 10% 인상
+-- 직급 코드가 J6인 직원은 급여를 15% 인상
+-- 직급 코드가 J5인 직원은 급여를 20% 인상
+-- 그 외의 직급의 직원은 급여를 5% 인상
+SELECT EMP_NAME AS "직원명",
+       JOB_CODE AS "직급 코드",
+       SALARY AS "기존 급여",
+       DECODE(JOB_CODE, 'J7', SALARY * 1.1, 'J6', SALARY * 1.15, 'J5', SALARY * 1.2, SALARY * 1.05) AS "인상된 급여"
+FROM EMPLOYEE
+ORDER BY JOB_CODE DESC;
+
+/*
+    2) CASE
+        CASE WHEN 조건식 1 THEN 결과값 1
+             WHEN 조건식 2 THEN 결과값 2
+             ...
+             ELSE 결과값
+        END
+*/
+
+-- EMPLOYEE 테이블에서 사번, 직원명, 주민번호, 성별(남자, 여자) 조회
+SELECT EMP_ID, 
+       EMP_NAME, 
+       EMP_NO,
+       CASE WHEN SUBSTR(EMP_NO, 8, 1) = '1' THEN '남자'
+            WHEN SUBSTR(EMP_NO, 8, 1) = '2' THEN '여자'
+            ELSE '잘못된 주민번호 입니다.'
+       END AS "성별"
+FROM EMPLOYEE;
+
+-- EMPLOYEE 테이블에서 직원명, 급여, 급여 등급(1 ~ 4 등급) 조회
+-- SALARY 값이 500만원 초과일 경우 1 등급
+-- SALARY 값이 500만원 이하 350만원 초과일 경우 2 등급
+-- SALARY 값이 350만원 이하 200만원 초과일 경우 3 등급
+-- 그 외의 경우 4 등급
+SELECT EMP_NAME AS "직원명", 
+       TO_CHAR(SALARY, 'FM9,999,999') AS "급여",
+       CASE WHEN SALARY > 5000000 THEN '1 등급'
+            WHEN SALARY > 3500000 THEN '2 등급'
+            WHEN SALARY > 2000000 THEN '3 등급'
+            ELSE '4 등급'
+       END AS "급여 등급"
+FROM EMPLOYEE
+ORDER BY SALARY DESC;   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
