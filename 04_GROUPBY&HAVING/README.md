@@ -17,7 +17,7 @@
   ```
 ### 2. HAVING
 * HAVING 절은 그룹 함수로 값을 구해올 그룹에 대해 조건을 설정할 때 사용한다. (WHERE 절은 SELECT에 대한 조건이다.)
-* HAVING 절은 ORDER BY 절 이전이든 이후이든 어느 곳에 위치해도 상관없다.
+* HAVING 절은 GROUP BY 절 이전이든 이후이든 어느 곳에 위치해도 상관없다.
   ```sql
   SELECT DEPT_CODE, 
          FLOOR(AVG(SALARY))
@@ -88,7 +88,7 @@
   WHERE SALARY > 3000000;
   ```
 ### 5. MINUS
-* 여러 개의 쿼리 결과에서 겹치는 부분을 제외한 나머지 부분 추출한다.
+* 선행 쿼리문의 결과값에서 후행 쿼리문의 결과값을 제외한 나머지 부분 추출한다.
   ```sql
   SELECT *
   FROM EMPLOYEE
