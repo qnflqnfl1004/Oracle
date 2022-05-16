@@ -165,10 +165,10 @@
 * NOT NULL 제약조건의 경우 ALTER와 MODIFY 구문을 이용해서 제약조건을 삭제해야 한다.
 * 제약조건의 수정은 불가능하기 때문에 삭제 후 다시 제약조건을 추가해야 한다.
   ``` sql
-  -- 제약조건 수정 (PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK)
+  -- 제약조건 삭제 (PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK)
   ALTER TABLE 테이블명 DROP CONSTRAINT 제약조건명;
 
-  -- NOT NULL 제약조건 수정
+  -- NOT NULL 제약조건 삭제
   ALTER TABLE 테이블명 MODIFY 컬럼명 NULL;
   ```
 * ALTER와 RENAME 구문을 이용해서 제약조건의 이름을 변경할 수 있다.
