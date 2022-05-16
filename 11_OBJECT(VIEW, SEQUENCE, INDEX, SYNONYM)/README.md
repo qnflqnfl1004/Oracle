@@ -117,10 +117,11 @@
     FROM EMPLOYEE;
     ```
   * 인덱스는 KEY와 ROWID를 가지고 있는데 KEY는 인덱스를 생성할 때 지정한 컬럼의 값이고 ROWID는 KEY에 해당하는 데이터의 주소이다.
-  <br>
+<br>
+
   ![image](https://user-images.githubusercontent.com/26870393/168463588-20aa4d02-5c58-4c04-bf1c-51885c7c9560.png)
   ![image](https://user-images.githubusercontent.com/26870393/168463596-66394206-8bcd-4dc5-92c1-61f0770905b3.png)
-  <br>
+<br>
 * 인덱스 종류
   |종류|설명|
   |:--:|:--:|
