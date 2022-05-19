@@ -47,7 +47,7 @@
 ### 4. VIEW 삭제
 * VIEW 삭제 시 DROP 구문을 사용해서 삭제한다.
   ```SQL
-  DROP VIEW 뷰명
+  DROP VIEW 뷰명;
   ```
 ## SEQUENCE
 ### 1. SEQUENCE
