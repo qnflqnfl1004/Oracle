@@ -1,5 +1,6 @@
 /*
     <INDEX>
+        INDEX는 오라클에서 제공하는 객체로 SQL 명령문의 처리 속도를 향상시키기 위해서 행들의 위치 정보를 가지고 있다.
 */
 SELECT ROWID, 
        EMP_ID, 
@@ -10,13 +11,14 @@ SELECT *
 FROM EMPLOYEE
 WHERE EMP_ID = 202;
 
-SELECT *
-FROM TB_STUDENT
+-- 춘 대학교 계정으로 이동 
+SELECT ROWID, TB.*
+FROM TB_STUDENT TB
 WHERE STUDENT_NAME = '황효종';
 --WHERE STUDENT_NO = 'A511332';
 
 -- 비고유 인덱스 생성
-CREATE INDEX IDX_STUDENT_NAME
+CREATE /*UNIQUE*/ INDEX IDX_STUDENT_NAME
 ON TB_STUDENT(STUDENT_NAME);
 
 -- 결합 인덱스 생성
@@ -30,9 +32,4 @@ ON TB_GRADE(STUDENT_NO, CLASS_NO);
 
 -- INDEX 삭제
 DROP INDEX IDX_STUDENT_NAME;
-
-
-
-
-
-
+DROP INDEX IDX_STUDENT_CLASS_NO;
