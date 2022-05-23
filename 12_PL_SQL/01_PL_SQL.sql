@@ -136,7 +136,7 @@ END;
 /
 
 /*
-        2) IF ~ ELSE 구문
+        1-2) IF ~ ELSE 구문
 */
 
 -- 위의 PL/SQL 구문을 IF ~ ELSE 문으로 변경하여 작성
@@ -195,7 +195,7 @@ END;
 /
 
 /*
-        3) IF ~ ELSIF ~ ELSE 구문
+        1-3) IF ~ ELSIF ~ ELSE 구문
 */
 -- 사용자에게 점수를 입력받아서 SCORE 변수에 저장한 후 학점은 입력된 점수에 따라 GRADE 변수에 저장한다.
 -- 90점 이상은 'A' 학점
@@ -311,7 +311,7 @@ BEGIN
 END;
 /
 
---      4) CASE 구문
+--      1-4) CASE 구문
 -- 사용자로부터 사번을 입력받은 후에 사원의 모든 컬럼에 데이터를 EMP에 대입하고 DEPT_CODE에 따라 알맞는 부서를 출력한다.
 DECLARE
     EMP EMPLOYEE%ROWTYPE;
@@ -341,6 +341,134 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('부서명 : ' || DTITLE);
 END;
 /
+
+/*
+    2) 반복문
+        2-1) BASIC LOOP
+*/
+-- 1 ~ 5까지 순차적으로 1씩 증가하는 값을 출력
+DECLARE
+    NUM NUMBER := 1;
+BEGIN
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(NUM);
+        
+        NUM := NUM + 1;
+        
+--        IF NUM > 5 THEN
+--            EXIT;
+--        END IF;
+        EXIT WHEN NUM > 10;
+    END LOOP;
+END;
+/
+
+/*
+        2-2) WHILE LOOP
+*/
+-- 1 ~ 5까지 순차적으로 1씩 증가하는 값을 출력
+DECLARE
+    NUM NUMBER := 1;
+BEGIN
+    WHILE NUM <= 5
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(NUM);
+        
+        NUM := NUM + 1;
+    END LOOP;
+END;
+/
+
+-- 구구단 출력 (2 ~ 9단)
+DECLARE
+    DAN NUMBER := 2;
+    SU NUMBER;
+    RESULT NUMBER;
+BEGIN
+    WHILE DAN <= 9
+    LOOP
+        SU := 1;
+        
+        WHILE SU <= 9
+        LOOP
+            RESULT := DAN * SU;
+            
+            DBMS_OUTPUT.PUT_LINE(DAN || ' X ' || SU || ' = ' || RESULT);
+            
+            SU := SU + 1;
+        END LOOP;
+        DBMS_OUTPUT.PUT_LINE('');
+        DAN := DAN + 1;
+    END LOOP;
+END;
+/
+
+/*
+        2-3) FOR LOOP
+*/
+SET SERVEROUTPUT ON;
+-- 1 ~ 5까지 순차적으로 1씩 증가하는 값을 출력
+BEGIN
+    FOR NUM IN 1..5
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(NUM);
+    END LOOP;
+END;
+/
+
+-- 역순으로 출력
+BEGIN
+    FOR NUM IN REVERSE 1..5
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(NUM);
+    END LOOP;
+END;
+/
+
+-- 구구단(2 ~ 9단) 출력 (단, 짝수단만 출력한다.)
+BEGIN
+    FOR DAN IN REVERSE 2..9
+    LOOP
+        -- 짝수단만 출력하고자 할 때 조건문
+        IF (MOD(DAN, 2) = 0) THEN
+            FOR SU IN 1..9
+            LOOP
+                DBMS_OUTPUT.PUT_LINE(DAN || ' X ' || SU || ' = ' || (DAN * SU));
+            END LOOP;
+            
+            DBMS_OUTPUT.PUT_LINE('');
+        END IF;
+    END LOOP;
+END;
+/
+
+-- 반복문을 이용한 데이터 삽입
+DROP TABLE TEST;
+CREATE TABLE TEST (
+    NUM NUMBER,
+    CREATE_DATE DATE
+);
+
+--TRUNCATE TABLE TEST;
+SELECT * FROM TEST;
+ROLLBACK;
+
+-- TEST 테이블에 10개의 행을 INSERT 하는 PL/SQL 작성
+BEGIN
+    FOR NUM IN 1..10
+    LOOP
+        INSERT INTO TEST VALUES(NUM, SYSDATE);
+        
+        IF (MOD(NUM, 2) = 0) THEN
+            COMMIT;
+        ELSE 
+            ROLLBACK;
+        END IF;    
+    END LOOP;
+END;
+/
+
+
 
 
 
