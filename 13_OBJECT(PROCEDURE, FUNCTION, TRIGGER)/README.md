@@ -36,7 +36,7 @@
 * FUNCTION은 CREATE 구문을 사용해서 생성한다.
 * FUNCTION은 PROCEDURE와 다르게 RETURN 구문이 추가된다.
   ```SQL
-  CREATE OR REPLACE FUNCTION
+  CREATE OR REPLACE FUNCTION 함수명
   ( 
       매개변수 1 타입,
       매개변수 2 타입,
